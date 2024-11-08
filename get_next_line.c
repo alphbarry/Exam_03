@@ -74,24 +74,6 @@ char	*ft_strjoin(char *s1, char *s2)
 	free(s1);
 	return (join);
 }
-/*
-char	*ft_strjoin(char *s1, char *s2)
-{
-	char	*s3;
-	size_t	ld;
-	size_t	ls;
-	size_t	lt;
-
-	ld = ft_strlen(s1);
-	ls = ft_strlen(s2);
-	lt = ld + ls;
-	s3 = (char *)malloc(lt + 1);
-	if (s3 == NULL)
-		return (NULL);
-	ft_strcpy(s3, s1);
-	ft_strcpy(s3 + ls, s2);
-	return (s3);
-}*/
 
 char	*get_next_line(int fd)
 {
