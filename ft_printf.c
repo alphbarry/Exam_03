@@ -54,8 +54,7 @@ int ft_printf(char *f, ...) {
         }
         f++;
     }
-    va_end(args);
-    return len;
+    return (va_end(args), len);
 }/*
 #include <stdio.h>
 int	main(void)
