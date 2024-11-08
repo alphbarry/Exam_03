@@ -48,7 +48,7 @@ char	*ft_strdup(char *s)
 
 	len = ft_strlen(s);
 	i = 0;
-	duplicate = (char *)malloc(sizeof(char) * len + 1);
+	duplicate = (char *)malloc(sizeof(char) * (len + 1));
 	if (!duplicate)
 		return (NULL);
 	while (s[i])
@@ -66,9 +66,12 @@ char	*ft_strjoin(char *s1, char *s2)
 
 	if (!s1 || !s2)
 		return (NULL);
-	join = malloc(ft_strlen(s1) + ft_strlen(s2) + 1);
+	join = malloc(sizeof(char) * (ft_strlen(s1) + ft_strlen(s2) + 1));
 	if (!join)
+	{
+		free(s1);
 		return (NULL);
+	}
 	ft_strcpy(join, s1);
 	ft_strcpy(join + ft_strlen(s1), s2);
 	free(s1);
@@ -87,8 +90,10 @@ char	*get_next_line(int fd)
 	{
 		buf[countread] = '\0';
 		line = ft_strjoin(line, buf);
+		if (!line)
+			return (NULL);
 	}
-	if (ft_strlen(line) == 0)
+	if (countread < 0 || (countread == 0 && ft_strlen(line) == 0))
 		return (free(line), NULL);
 
 	if (newline)
@@ -105,21 +110,20 @@ char	*get_next_line(int fd)
 # include <fcntl.h>
 # include <stdio.h>
 
-int	main(int argc, char **argv)
-{
-	int		fd;
-	char	*line;
-
-	fd = open("text.txt", O_RDONLY, 0777);
-	line = get_next_line(fd);
-	while (!line)
+int main() {
+    int fd = open("text.txt", O_RDONLY);  // Abre el archivo en modo de solo lectura
+    if (fd == -1)
 	{
-		printf("%s\n", line);
-		free(line);
-		line = get_next_line(fd);
-	}
-	free(line);
-	close(fd);
-	return (0);
+        perror("Error al abrir el archivo");
+        return 1;
+    }
+    char *line;
+    while ((line = get_next_line(fd)) != NULL)
+	{  // Llama a get_next_line en un bucle
+        printf("%s", line);  // Imprime la línea
+        free(line);          // Libera la línea leída después de imprimir
+    }
+    close(fd);  // Cierra el archivo después de leer todas las líneas
+    return 0;
 }
 
