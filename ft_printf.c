@@ -12,53 +12,50 @@
 #include <stdarg.h>
 #include <unistd.h>
 
-void	put_str(char *s, int *len)
-{
-	if (!s)
-		s = "(null)";
-	while (*s)
-		*len += write (1, s++, 1);
+void put_str(char *s, int *len) {
+    if (!s)
+        s = "(null)";
+    while (*s)
+        *len += write(1, s++, 1);
 }
 
-void	put_dig(long long int n, int base, int *len)
-{
-	char	*hexa;
+void put_dig(int n, int base, int *len) {
+    char *hexa = "0123456789abcdef";
+    unsigned int num;
 
-	hexa = "0123456789abcdef";
-	if (n < 0)
+    if (n < 0 && base == 10)
 	{
-		if (base == 10)
-			*len += write (1, "-", 1);
-		n = -n;
-	}
-	if (n >= base)
-		put_dig(n / base, base, len);
-	*len += write(1, &hexa[n % base], 1);
+		*len += write(1, "-", 1);
+        num = -n;                 // Convierte a positivo
+    }
+	else
+        num = (unsigned int)n;
+    if (num >= (unsigned int)base)
+        put_dig(num / base, base, len);
+    *len += write(1, &hexa[num % base], 1);
 }
 
-int	ft_printf(char *f, ...)
-{
-	int	len = 0;
-	va_list	args;
+int ft_printf(char *f, ...) {
+    int len = 0;
+    va_list args;
 
-	va_start(args, f);
-	while (*f)
-	{
-		if ((*f == '%') && *(f + 1))
-		{
-			f++;
-			if (*f == 's')
-				put_str(va_arg(args, char *), &len);
-			else if (*f == 'd')
-				put_dig((long long int)va_arg(args, int), 10, &len);
-			else if (*f == 'x')
-				put_dig((unsigned int)va_arg(args, int), 16, &len);
-		}
-		else
-			len += write (1, f, 1);
-		f++;
-	}
-	return (va_end(args), len);
+    va_start(args, f);
+    while (*f) {
+        if (*f == '%' && *(f + 1)) {
+            f++;
+            if (*f == 's')
+                put_str(va_arg(args, char *), &len);
+            else if (*f == 'd')
+                put_dig(va_arg(args, int), 10, &len);
+            else if (*f == 'x')
+                put_dig(va_arg(args, unsigned int), 16, &len);
+        } else {
+            len += write(1, f, 1);
+        }
+        f++;
+    }
+    va_end(args);
+    return len;
 }/*
 #include <stdio.h>
 int	main(void)
