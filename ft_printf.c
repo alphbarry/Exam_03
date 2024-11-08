@@ -19,29 +19,32 @@ void put_str(char *s, int *len) {
         *len += write(1, s++, 1);
 }
 
-void put_dig(int n, int base, int *len) {
-    char *hexa = "0123456789abcdef";
-    unsigned int num;
+void put_dig(int n, int base, int *len)
+{
+    char 		*hexa = "0123456789abcdef";
+    unsigned int	num;
 
     if (n < 0 && base == 10)
-	{
-		*len += write(1, "-", 1);
-        num = -n;                 // Convierte a positivo
+    {
+	*len += write(1, "-", 1);
+        num = -n;
     }
-	else
+    else
         num = (unsigned int)n;
     if (num >= (unsigned int)base)
         put_dig(num / base, base, len);
     *len += write(1, &hexa[num % base], 1);
 }
 
-int ft_printf(char *f, ...) {
+int ft_printf(char *f, ...)
+{
     int len = 0;
     va_list args;
 
     va_start(args, f);
     while (*f) {
-        if (*f == '%' && *(f + 1)) {
+        if (*f == '%' && *(f + 1))
+	{
             f++;
             if (*f == 's')
                 put_str(va_arg(args, char *), &len);
@@ -49,9 +52,9 @@ int ft_printf(char *f, ...) {
                 put_dig(va_arg(args, int), 10, &len);
             else if (*f == 'x')
                 put_dig(va_arg(args, unsigned int), 16, &len);
-        } else {
+        } 
+	else
             len += write(1, f, 1);
-        }
         f++;
     }
     return (va_end(args), len);
